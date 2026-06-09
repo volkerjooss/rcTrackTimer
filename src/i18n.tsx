@@ -43,6 +43,8 @@ const translations: Record<Lang, Dict> = {
     'setup.timeLabel': 'Time',
     'setup.minShort': 'min',
     'setup.defaultClassName': 'Class {n}',
+    'setup.decrease': 'Decrease',
+    'setup.increase': 'Increase',
 
     // Info view
     'info.title': 'About RC Track Timer',
@@ -98,6 +100,8 @@ const translations: Record<Lang, Dict> = {
     'setup.timeLabel': 'Zeit',
     'setup.minShort': 'Min',
     'setup.defaultClassName': 'Klasse {n}',
+    'setup.decrease': 'Verringern',
+    'setup.increase': 'Erhöhen',
 
     // Info view
     'info.title': 'Über RC Track Timer',

@@ -11,6 +11,58 @@ function createId(): string {
   return Math.random().toString(36).slice(2, 10) + Date.now().toString(36)
 }
 
+interface NumberStepperProps {
+  value: number
+  onChange: (value: number) => void
+  min?: number
+  max?: number
+  step?: number
+  decLabel: string
+  incLabel: string
+}
+
+function NumberStepper({ value, onChange, min, max, step = 1, decLabel, incLabel }: NumberStepperProps) {
+  const clamp = (v: number) => {
+    let n = v
+    if (min !== undefined) n = Math.max(min, n)
+    if (max !== undefined) n = Math.min(max, n)
+    return n
+  }
+  const canDec = min === undefined || value > min
+  const canInc = max === undefined || value < max
+  return (
+    <span className="stepper">
+      <button
+        type="button"
+        className="btn icon stepper-btn"
+        aria-label={decLabel}
+        onClick={() => onChange(clamp(value - step))}
+        disabled={!canDec}
+      >
+        −
+      </button>
+      <input
+        type="number"
+        inputMode="numeric"
+        min={min}
+        max={max}
+        step={step}
+        value={value}
+        onChange={(e) => onChange(Number(e.target.value))}
+      />
+      <button
+        type="button"
+        className="btn icon stepper-btn"
+        aria-label={incLabel}
+        onClick={() => onChange(clamp(value + step))}
+        disabled={!canInc}
+      >
+        +
+      </button>
+    </span>
+  )
+}
+
 export default function SetupView({ schedule, update }: Props) {
   const { t } = useI18n()
   const atMax = schedule.entries.length >= MAX_ENTRIES
@@ -112,12 +164,13 @@ export default function SetupView({ schedule, update }: Props) {
         {schedule.beepEnabled && (
           <div className="beep-length">
             <span className="beep-length-label">{t('setup.beepLength')}</span>
-            <input
-              type="number"
+            <NumberStepper
+              value={schedule.beepDurationSec}
               min={1}
               max={10}
-              value={schedule.beepDurationSec}
-              onChange={(e) => setBeepDuration(Number(e.target.value))}
+              onChange={setBeepDuration}
+              decLabel={t('setup.decrease')}
+              incLabel={t('setup.increase')}
             />
             <span className="beep-length-unit">{t('setup.secShort')}</span>
           </div>
@@ -151,13 +204,12 @@ export default function SetupView({ schedule, update }: Props) {
                 <label className="entry-field">
                   <span className="entry-field-label">{t('setup.timeLabel')}</span>
                   <span className="entry-duration">
-                    <input
-                      type="number"
-                      min={1}
+                    <NumberStepper
                       value={entry.durationMin}
-                      onChange={(e) =>
-                        updateEntry(entry.id, { durationMin: Math.max(0, Number(e.target.value)) })
-                      }
+                      min={1}
+                      onChange={(v) => updateEntry(entry.id, { durationMin: Math.max(1, v) })}
+                      decLabel={t('setup.decrease')}
+                      incLabel={t('setup.increase')}
                     />
                     <span>{t('setup.minShort')}</span>
                   </span>
