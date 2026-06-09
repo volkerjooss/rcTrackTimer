@@ -9,8 +9,12 @@ function getContext(): AudioContext | null {
 }
 
 /**
- * Play a short beep using the Web Audio API.
- * @param durationMs length of the beep in milliseconds (default 1000).
+ * Play a horn-style tone using the Web Audio API.
+ *
+ * The horn timbre comes from stacking several slightly detuned sawtooth
+ * oscillators (fundamental + harmonics) shaped by a low-pass filter, giving a
+ * fuller, brassier sound than a pure sine beep.
+ * @param durationMs length of the tone in milliseconds (default 1000).
  */
 export function beep(durationMs = 1000): void {
   const ctx = getContext()
@@ -19,23 +23,53 @@ export function beep(durationMs = 1000): void {
   if (ctx.state === 'suspended') void ctx.resume()
 
   const now = ctx.currentTime
-  const oscillator = ctx.createOscillator()
-  const gain = ctx.createGain()
-
-  oscillator.type = 'sine'
-  oscillator.frequency.value = 880
-
   const seconds = durationMs / 1000
-  // Short fade in/out to avoid clicks.
-  gain.gain.setValueAtTime(0, now)
-  gain.gain.linearRampToValueAtTime(0.3, now + 0.02)
-  gain.gain.setValueAtTime(0.3, now + Math.max(0.02, seconds - 0.05))
-  gain.gain.linearRampToValueAtTime(0, now + seconds)
 
-  oscillator.connect(gain)
-  gain.connect(ctx.destination)
-  oscillator.start(now)
-  oscillator.stop(now + seconds)
+  // Master gain with a horn-like envelope: quick-ish attack, sustained body,
+  // gentle release to avoid clicks.
+  const master = ctx.createGain()
+  const attack = 0.05
+  const release = 0.12
+  const peak = 0.35
+  master.gain.setValueAtTime(0, now)
+  master.gain.linearRampToValueAtTime(peak, now + Math.min(attack, seconds / 2))
+  master.gain.setValueAtTime(peak, now + Math.max(attack, seconds - release))
+  master.gain.linearRampToValueAtTime(0, now + seconds)
+
+  // Low-pass filter tames the harsh top end of the sawtooths for a warm horn.
+  const filter = ctx.createBiquadFilter()
+  filter.type = 'lowpass'
+  filter.frequency.value = 2200
+  filter.Q.value = 0.7
+
+  filter.connect(master)
+  master.connect(ctx.destination)
+
+  // Fundamental plus harmonics, with slight detune for a thick horn chorus.
+  const fundamental = 330 // ~E4, typical horn-ish pitch
+  const partials = [
+    { ratio: 1, gain: 1.0, detune: -4 },
+    { ratio: 1, gain: 0.6, detune: 5 },
+    { ratio: 2, gain: 0.4, detune: 0 },
+    { ratio: 3, gain: 0.18, detune: 0 },
+  ]
+
+  const oscillators: OscillatorNode[] = []
+  for (const p of partials) {
+    const osc = ctx.createOscillator()
+    osc.type = 'sawtooth'
+    osc.frequency.value = fundamental * p.ratio
+    osc.detune.value = p.detune
+
+    const oscGain = ctx.createGain()
+    oscGain.gain.value = p.gain
+
+    osc.connect(oscGain)
+    oscGain.connect(filter)
+    osc.start(now)
+    osc.stop(now + seconds)
+    oscillators.push(osc)
+  }
 }
 
 /** Resume the audio context from within a user gesture (e.g. a click). */
