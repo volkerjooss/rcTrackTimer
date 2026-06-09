@@ -96,24 +96,32 @@ export default function SetupView({ schedule, update }: Props) {
                 onChange={(e) => updateEntry(entry.id, { color: e.target.value })}
                 aria-label="Class color"
               />
-              <input
-                type="text"
-                className="entry-name"
-                value={entry.className}
-                placeholder="Class name"
-                onChange={(e) => updateEntry(entry.id, { className: e.target.value })}
-              />
-              <label className="entry-duration">
-                <input
-                  type="number"
-                  min={1}
-                  value={entry.durationMin}
-                  onChange={(e) =>
-                    updateEntry(entry.id, { durationMin: Math.max(0, Number(e.target.value)) })
-                  }
-                />
-                <span>min</span>
-              </label>
+              <div className="entry-fields">
+                <label className="entry-field">
+                  <span className="entry-field-label">Class</span>
+                  <input
+                    type="text"
+                    className="entry-name"
+                    value={entry.className}
+                    placeholder="Class name"
+                    onChange={(e) => updateEntry(entry.id, { className: e.target.value })}
+                  />
+                </label>
+                <label className="entry-field">
+                  <span className="entry-field-label">Time</span>
+                  <span className="entry-duration">
+                    <input
+                      type="number"
+                      min={1}
+                      value={entry.durationMin}
+                      onChange={(e) =>
+                        updateEntry(entry.id, { durationMin: Math.max(0, Number(e.target.value)) })
+                      }
+                    />
+                    <span>min</span>
+                  </span>
+                </label>
+              </div>
               <div className="entry-actions">
                 <button className="btn icon" onClick={() => move(entry.id, -1)} disabled={i === 0}>
                   ↑
