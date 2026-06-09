@@ -327,6 +327,11 @@ input[type='number'] {
 }
 
 @media (max-width: 480px) {
+  .entry-row {
+    flex-wrap: wrap;
+    align-items: flex-start;
+  }
+
   .entry-fields {
     grid-template-columns: 1fr;
   }
@@ -342,6 +347,19 @@ input[type='number'] {
   .entry-duration .stepper input[type='number'] {
     flex: 1;
     width: auto;
+  }
+
+  /* Move the reorder/remove buttons to their own full-width row so the
+     name field and duration stepper are no longer squeezed. */
+  .entry-actions {
+    width: 100%;
+    justify-content: flex-end;
+    margin-top: 0.2rem;
+  }
+
+  .entry-actions .btn.icon {
+    padding: 0.5rem 0.9rem;
+    font-size: 1.1rem;
   }
 }
 
