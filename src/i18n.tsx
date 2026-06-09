@@ -105,7 +105,7 @@ const translations: Record<Lang, Dict> = {
       'RC Track Timer hilft dabei, Trainingseinheiten auf RC-Rennstrecken zu organisieren. RC-Modelle unterscheiden sich stark in Geschwindigkeit und Rundenzeiten, daher braucht jede Klasse eigene Zeitfenster auf der Strecke. Diese App erstellt einen Zeitplan und zeigt auf einen Blick, welche Klasse gerade auf der Strecke ist und welche Klassen als Nächstes kommen.',
     'info.howTo': 'So funktioniert es',
     'info.howTo1':
-      'Öffne die Setup, um deine Session festzulegen: Stelle Start- und Endzeit ein und füge bis zu 10 Klassen hinzu, jeweils mit Name, Dauer in Minuten und Farbe.',
+      'Öffne die Setup Seite, um deine Sessions festzulegen: Stelle Start- und Endzeit ein und füge bis zu 10 Klassen hinzu, jeweils mit Name, Dauer in Minuten und Farbe.',
     'info.howTo2':
       'Wechsle während der Session zur Timer-Ansicht. Die Klassenliste läuft ab der Startzeit und wiederholt sich, bis die Endzeit erreicht ist.',
     'info.howTo3':
