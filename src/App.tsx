@@ -1,6 +1,8 @@
 import { NavLink, Navigate, Route, Routes } from 'react-router-dom'
+import { useEffect } from 'react'
 import { useSchedule } from './storage'
 import { LANGUAGES, useI18n } from './i18n'
+import { installAudioUnlock } from './sound'
 import MainView from './components/MainView'
 import SetupView from './components/SetupView'
 import InfoView from './components/InfoView'
@@ -8,6 +10,12 @@ import InfoView from './components/InfoView'
 export default function App() {
   const { schedule, update } = useSchedule()
   const { lang, setLang, t } = useI18n()
+
+  // Unlock audio on the first user interaction so the timer-driven beep can
+  // play on iOS Safari, which keeps the AudioContext suspended until a gesture.
+  useEffect(() => {
+    installAudioUnlock()
+  }, [])
 
   return (
     <div className="app">

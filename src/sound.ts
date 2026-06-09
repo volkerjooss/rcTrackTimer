@@ -72,8 +72,56 @@ export function beep(durationMs = 1000): void {
   }
 }
 
-/** Resume the audio context from within a user gesture (e.g. a click). */
+/**
+ * Resume and unlock the audio context from within a user gesture.
+ *
+ * iOS Safari starts the AudioContext in a "suspended" state and only allows it
+ * to start producing sound from inside a user gesture. Simply calling resume()
+ * is not enough on iOS: a (silent) buffer must also be played within the same
+ * gesture to fully unlock audio. Once unlocked, sounds scheduled later from a
+ * timer (e.g. the class-change beep) will play.
+ */
 export function unlockAudio(): void {
   const ctx = getContext()
-  if (ctx && ctx.state === 'suspended') void ctx.resume()
+  if (!ctx) return
+  if (ctx.state === 'suspended') void ctx.resume()
+
+  // Play a one-sample silent buffer to satisfy iOS's gesture requirement.
+  try {
+    const buffer = ctx.createBuffer(1, 1, 22050)
+    const source = ctx.createBufferSource()
+    source.buffer = buffer
+    source.connect(ctx.destination)
+    source.start(0)
+  } catch {
+    // Ignore: best-effort unlock.
+  }
+}
+
+let unlockInstalled = false
+
+/**
+ * Install one-time global listeners that unlock audio on the first user
+ * interaction anywhere in the app. This guarantees the AudioContext is running
+ * before the timer-driven beep fires on iOS, even if the user never toggled the
+ * beep preview. Listeners remove themselves once the context is running.
+ */
+export function installAudioUnlock(): void {
+  if (unlockInstalled || typeof window === 'undefined') return
+  unlockInstalled = true
+
+  const events: Array<keyof DocumentEventMap> = ['touchend', 'pointerdown', 'mousedown', 'keydown']
+
+  const handler = () => {
+    unlockAudio()
+    const ctx = getContext()
+    // Once the context is actually running, stop listening.
+    if (ctx && ctx.state === 'running') {
+      for (const evt of events) document.removeEventListener(evt, handler)
+    }
+  }
+
+  for (const evt of events) {
+    document.addEventListener(evt, handler, { passive: true })
+  }
 }
