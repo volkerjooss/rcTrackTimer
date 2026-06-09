@@ -68,6 +68,33 @@ body {
   background: var(--accent);
 }
 
+.lang-switch {
+  display: inline-flex;
+  margin-left: 0.25rem;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.lang-btn {
+  border: none;
+  background: transparent;
+  color: var(--text-dim);
+  padding: 0.35rem 0.7rem;
+  font-weight: 700;
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+
+.lang-btn:hover {
+  color: var(--text);
+}
+
+.lang-btn.active {
+  background: var(--accent);
+  color: #fff;
+}
+
 .app-main {
   flex: 1;
   padding-top: 1.25rem;

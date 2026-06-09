@@ -1,26 +1,41 @@
 import { NavLink, Navigate, Route, Routes } from 'react-router-dom'
 import { useSchedule } from './storage'
+import { LANGUAGES, useI18n } from './i18n'
 import MainView from './components/MainView'
 import SetupView from './components/SetupView'
 import InfoView from './components/InfoView'
 
 export default function App() {
   const { schedule, update } = useSchedule()
+  const { lang, setLang, t } = useI18n()
 
   return (
     <div className="app">
       <header className="app-header">
-        <h1 className="app-title">RC Track Timer</h1>
+        <h1 className="app-title">{t('app.title')}</h1>
         <nav className="app-nav">
           <NavLink to="/" end className={({ isActive }) => (isActive ? 'nav-link active' : 'nav-link')}>
-            Timer
+            {t('nav.timer')}
           </NavLink>
           <NavLink to="/setup" className={({ isActive }) => (isActive ? 'nav-link active' : 'nav-link')}>
-            Setup
+            {t('nav.setup')}
           </NavLink>
           <NavLink to="/info" className={({ isActive }) => (isActive ? 'nav-link active' : 'nav-link')}>
-            Info
+            {t('nav.info')}
           </NavLink>
+          <div className="lang-switch" role="group" aria-label={t('nav.language')}>
+            {LANGUAGES.map(({ code, label }) => (
+              <button
+                key={code}
+                type="button"
+                className={code === lang ? 'lang-btn active' : 'lang-btn'}
+                aria-pressed={code === lang}
+                onClick={() => setLang(code)}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
         </nav>
       </header>
 

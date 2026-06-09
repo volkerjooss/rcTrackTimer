@@ -1,5 +1,6 @@
 import { DEFAULT_COLORS, MAX_ENTRIES, type Schedule, type ScheduleEntry } from '../types'
 import { beep } from '../sound'
+import { useI18n } from '../i18n'
 
 interface Props {
   schedule: Schedule
@@ -11,6 +12,7 @@ function createId(): string {
 }
 
 export default function SetupView({ schedule, update }: Props) {
+  const { t } = useI18n()
   const atMax = schedule.entries.length >= MAX_ENTRIES
 
   function setStartTime(startTime: string) {
@@ -40,7 +42,7 @@ export default function SetupView({ schedule, update }: Props) {
       const color = DEFAULT_COLORS[prev.entries.length % DEFAULT_COLORS.length]
       const entry: ScheduleEntry = {
         id: createId(),
-        className: `Class ${prev.entries.length + 1}`,
+        className: t('setup.defaultClassName', { n: prev.entries.length + 1 }),
         durationMin: 10,
         color,
       }
@@ -74,7 +76,7 @@ export default function SetupView({ schedule, update }: Props) {
     <section className="setup">
       <div className="setup-toolbar">
         <label className="field">
-          <span className="field-label">Start time</span>
+          <span className="field-label">{t('setup.startTime')}</span>
           <input
             type="time"
             value={schedule.startTime}
@@ -82,7 +84,7 @@ export default function SetupView({ schedule, update }: Props) {
           />
         </label>
         <label className="field">
-          <span className="field-label">End time</span>
+          <span className="field-label">{t('setup.endTime')}</span>
           <input
             type="time"
             value={schedule.endTime}
@@ -90,7 +92,7 @@ export default function SetupView({ schedule, update }: Props) {
           />
         </label>
         <button className="btn primary" onClick={addEntry} disabled={atMax}>
-          + Add class
+          {t('setup.addClass')}
         </button>
         <span className="entry-count">
           {schedule.entries.length} / {MAX_ENTRIES}
@@ -104,12 +106,12 @@ export default function SetupView({ schedule, update }: Props) {
             checked={schedule.beepEnabled}
             onChange={(e) => setBeepEnabled(e.target.checked)}
           />
-          <span>Beep on class change</span>
+          <span>{t('setup.beepToggle')}</span>
         </label>
 
         {schedule.beepEnabled && (
           <div className="beep-length">
-            <span className="beep-length-label">Length</span>
+            <span className="beep-length-label">{t('setup.beepLength')}</span>
             <input
               type="number"
               min={1}
@@ -117,13 +119,13 @@ export default function SetupView({ schedule, update }: Props) {
               value={schedule.beepDurationSec}
               onChange={(e) => setBeepDuration(Number(e.target.value))}
             />
-            <span className="beep-length-unit">sec</span>
+            <span className="beep-length-unit">{t('setup.secShort')}</span>
           </div>
         )}
       </div>
 
       {schedule.entries.length === 0 ? (
-        <p className="empty">No classes yet. Add your first class to build the schedule.</p>
+        <p className="empty">{t('setup.noClasses')}</p>
       ) : (
         <ul className="entry-list">
           {schedule.entries.map((entry, i) => (
@@ -133,21 +135,21 @@ export default function SetupView({ schedule, update }: Props) {
                 className="entry-color"
                 value={entry.color}
                 onChange={(e) => updateEntry(entry.id, { color: e.target.value })}
-                aria-label="Class color"
+                aria-label={t('setup.colorLabel')}
               />
               <div className="entry-fields">
                 <label className="entry-field">
-                  <span className="entry-field-label">Class</span>
+                  <span className="entry-field-label">{t('setup.classLabel')}</span>
                   <input
                     type="text"
                     className="entry-name"
                     value={entry.className}
-                    placeholder="Class name"
+                    placeholder={t('setup.classPlaceholder')}
                     onChange={(e) => updateEntry(entry.id, { className: e.target.value })}
                   />
                 </label>
                 <label className="entry-field">
-                  <span className="entry-field-label">Time</span>
+                  <span className="entry-field-label">{t('setup.timeLabel')}</span>
                   <span className="entry-duration">
                     <input
                       type="number"
@@ -157,7 +159,7 @@ export default function SetupView({ schedule, update }: Props) {
                         updateEntry(entry.id, { durationMin: Math.max(0, Number(e.target.value)) })
                       }
                     />
-                    <span>min</span>
+                    <span>{t('setup.minShort')}</span>
                   </span>
                 </label>
               </div>
