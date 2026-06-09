@@ -1,4 +1,5 @@
 import { DEFAULT_COLORS, MAX_ENTRIES, type Schedule, type ScheduleEntry } from '../types'
+import { beep } from '../sound'
 
 interface Props {
   schedule: Schedule
@@ -18,6 +19,19 @@ export default function SetupView({ schedule, update }: Props) {
 
   function setEndTime(endTime: string) {
     update((prev) => ({ ...prev, endTime }))
+  }
+
+  function setBeepEnabled(beepEnabled: boolean) {
+    if (beepEnabled) {
+      // Unlock and preview the beep from within the click gesture.
+      beep(schedule.beepDurationSec * 1000)
+    }
+    update((prev) => ({ ...prev, beepEnabled }))
+  }
+
+  function setBeepDuration(value: number) {
+    const beepDurationSec = Math.min(10, Math.max(1, Math.round(value)))
+    update((prev) => ({ ...prev, beepDurationSec }))
   }
 
   function addEntry() {
@@ -81,6 +95,31 @@ export default function SetupView({ schedule, update }: Props) {
         <span className="entry-count">
           {schedule.entries.length} / {MAX_ENTRIES}
         </span>
+      </div>
+
+      <div className="beep-settings">
+        <label className="toggle-field">
+          <input
+            type="checkbox"
+            checked={schedule.beepEnabled}
+            onChange={(e) => setBeepEnabled(e.target.checked)}
+          />
+          <span>Beep on class change</span>
+        </label>
+
+        {schedule.beepEnabled && (
+          <div className="beep-length">
+            <span className="beep-length-label">Length</span>
+            <input
+              type="number"
+              min={1}
+              max={10}
+              value={schedule.beepDurationSec}
+              onChange={(e) => setBeepDuration(Number(e.target.value))}
+            />
+            <span className="beep-length-unit">sec</span>
+          </div>
+        )}
       </div>
 
       {schedule.entries.length === 0 ? (

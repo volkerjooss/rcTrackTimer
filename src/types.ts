@@ -11,6 +11,10 @@ export interface Schedule {
   /** End time of the session as "HH:MM" (24h, local time). The class list
    *  repeats from the start time until this time is reached. */
   endTime: string
+  /** Play a 1s beep when the class changes. Off by default. */
+  beepEnabled: boolean
+  /** Beep length in seconds (1-10). */
+  beepDurationSec: number
   /** Ordered list of classes, max 10 entries. */
   entries: ScheduleEntry[]
 }
@@ -35,6 +39,8 @@ export function createEmptySchedule(): Schedule {
   return {
     startTime: '10:00',
     endTime: '17:00',
+    beepEnabled: false,
+    beepDurationSec: 1,
     entries: [],
   }
 }

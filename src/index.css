@@ -148,6 +148,54 @@ input[type='number'] {
   font-variant-numeric: tabular-nums;
 }
 
+.beep-settings {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.75rem 1.25rem;
+  margin-bottom: 1.25rem;
+  padding: 0.75rem 1rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+
+.toggle-field {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  color: var(--text);
+  font-weight: 600;
+}
+
+.toggle-field input {
+  width: 1.1rem;
+  height: 1.1rem;
+  cursor: pointer;
+}
+
+.beep-length {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: var(--text-dim);
+}
+
+.beep-length-label {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.beep-length input {
+  width: 4rem;
+}
+
+.beep-length-unit {
+  font-size: 0.9rem;
+}
+
 .entry-list {
   list-style: none;
   margin: 0;
@@ -373,4 +421,50 @@ input[type='number'] {
   font-size: 0.9rem;
   min-width: 4rem;
   text-align: right;
+}
+
+/* ---------- Info view ---------- */
+.info {
+  max-width: 720px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+.info-title {
+  margin: 0 0 0.75rem;
+  font-size: 1.6rem;
+}
+
+.info-lead {
+  color: var(--text);
+  margin: 0 0 1.5rem;
+}
+
+.info-heading {
+  margin: 1.5rem 0 0.5rem;
+  font-size: 1.1rem;
+  color: var(--text);
+}
+
+.info-list {
+  margin: 0;
+  padding-left: 1.25rem;
+  color: var(--text-dim);
+}
+
+.info-list li {
+  margin-bottom: 0.4rem;
+}
+
+.info-list strong {
+  color: var(--text);
+}
+
+.info-text {
+  color: var(--text-dim);
+  margin: 0.25rem 0;
+}
+
+.info-link {
+  color: var(--accent);
 }

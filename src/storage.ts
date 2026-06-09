@@ -15,6 +15,12 @@ function loadSchedule(): Schedule {
     if (typeof parsed.endTime !== 'string') {
       parsed.endTime = createEmptySchedule().endTime
     }
+    if (typeof parsed.beepEnabled !== 'boolean') {
+      parsed.beepEnabled = createEmptySchedule().beepEnabled
+    }
+    if (typeof parsed.beepDurationSec !== 'number') {
+      parsed.beepDurationSec = createEmptySchedule().beepDurationSec
+    }
     return parsed
   } catch {
     return createEmptySchedule()

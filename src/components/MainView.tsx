@@ -1,6 +1,8 @@
 import { Link } from 'react-router-dom'
+import { useEffect, useRef } from 'react'
 import type { Schedule } from '../types'
 import { useNow } from '../useNow'
+import { beep } from '../sound'
 import {
   buildTimeline,
   formatClock,
@@ -16,6 +18,19 @@ export default function MainView({ schedule }: Props) {
   const now = useNow(1000)
   const slots = buildTimeline(schedule, now)
   const { current, upcoming, remainingMs, beforeStart, finished } = getActiveState(slots, now)
+
+  // Beep once when the active class changes (only after the first observed slot).
+  const lastSlotStart = useRef<number | null>(null)
+  useEffect(() => {
+    const start = current ? current.start : null
+    if (start !== lastSlotStart.current) {
+      const isFirstObservation = lastSlotStart.current === null
+      lastSlotStart.current = start
+      if (!isFirstObservation && start !== null && schedule.beepEnabled) {
+        beep(schedule.beepDurationSec * 1000)
+      }
+    }
+  }, [current, schedule.beepEnabled])
 
   if (schedule.entries.length === 0) {
     return (
