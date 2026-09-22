@@ -1,5 +1,12 @@
 # rcTrackTimer
 
+### ▶️ [Open rcTrackTimer](https://volkerjooss.github.io/rcTrackTimer/)
+
+Runs straight in the browser at
+**[volkerjooss.github.io/rcTrackTimer](https://volkerjooss.github.io/rcTrackTimer/)** —
+no installation, no sign-up. Open it on the phone or tablet you take to the
+track and add it to your home screen.
+
 rcTrackTimer is used to organize training sessions on RC race tracks.
 RC models differ greatly in speed and lap times, so each class needs its own
 timeslots on the race track. This web application creates and displays a
@@ -47,8 +54,8 @@ npm run preview  # preview the production build locally
 
 ## Deploy to GitHub Pages
 
-The app is configured for a project Page served at
-`https://volkerjooss.github.io/rcTrackTimer/` (see `base` in `vite.config.ts`).
+The app is configured for a project Page served at the URL linked at the top of
+this file (see `base` in `vite.config.ts`).
 
 1. Push this repository to GitHub with the name **rcTrackTimer**.
    If you use a different repo name, update `base` in `vite.config.ts` to `'/<repo-name>/'`.
