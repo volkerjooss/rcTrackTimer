@@ -1,6 +1,6 @@
 # rcTrackTimer
 
-### ▶️ [Open rcTrackTimer](https://volkerjooss.github.io/rcTrackTimer/)
+### ▶️ Open [rcTrackTimer](https://volkerjooss.github.io/rcTrackTimer/)
 
 Runs straight in the browser at
 **[volkerjooss.github.io/rcTrackTimer](https://volkerjooss.github.io/rcTrackTimer/)** —
