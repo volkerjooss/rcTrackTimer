@@ -21,18 +21,20 @@ export default function MainView({ schedule }: Props) {
   const slots = buildTimeline(schedule, now)
   const { current, upcoming, remainingMs, beforeStart, finished } = getActiveState(slots, now)
 
-  // Beep once when the active class changes (only after the first observed slot).
-  const lastSlotStart = useRef<number | null>(null)
+  // Beep once when the active class changes. `undefined` means "nothing
+  // observed yet" and is deliberately distinct from `null` ("no class active"):
+  // only the very first render is skipped, so opening the timer mid-class stays
+  // silent while the start of the first class still beeps.
+  const currentStart = current ? current.start : null
+  const lastSlotStart = useRef<number | null | undefined>(undefined)
   useEffect(() => {
-    const start = current ? current.start : null
-    if (start !== lastSlotStart.current) {
-      const isFirstObservation = lastSlotStart.current === null
-      lastSlotStart.current = start
-      if (!isFirstObservation && start !== null && schedule.beepEnabled) {
-        beep(schedule.beepDurationSec * 1000)
-      }
+    if (currentStart === lastSlotStart.current) return
+    const isFirstObservation = lastSlotStart.current === undefined
+    lastSlotStart.current = currentStart
+    if (!isFirstObservation && currentStart !== null && schedule.beepEnabled) {
+      beep(schedule.beepDurationSec * 1000)
     }
-  }, [current, schedule.beepEnabled])
+  }, [currentStart, schedule.beepEnabled, schedule.beepDurationSec])
 
   if (schedule.entries.length === 0) {
     return (
